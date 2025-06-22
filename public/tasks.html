@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Анат. Ситуационные задачи</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="css/style.css"> <!-- Подключение стилей -->
+</head>
+<body>
+
+    <!--окно чата-->
+    <div  class="task-container">
+
+    <!--текст задачки-->
+        <div class="task-description">
+            <p id="currentTask" data-index="0"></p>      
+        </div>
+    </div>
+
+        <!--окно ввода-->
+    <div class="task-input">
+        <textarea type="text" class="text-input" id="studentAnswer" placeholder="Введите ответ..."></textarea>
+        <button class="task-btn" id="checkAnswer"><img class="task-btn-img" src="btn-icon.png"></button>
+    </div>
+    
+    <!--модалка-->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Результат проверки</h3>
+        <div id="feedbackText"></div>
+        <button id="nextTaskBtn" class="tg-button">Следующая задача</button>
+        </div>
+    </div>
+
+    <!--Нижнее меню-->
+    <div class="footer">
+        <button class="footer-btn" id="theoryBtn"  onclick="window.location.href='tickets.html'">Теория</button>
+        <button class="footer-btn" id="testsBtn"  onclick="window.location.href='tests.html'">Тесты</button>
+        <button class="footer-btn" id="tasksBtn"  onclick="window.location.href='tasks.html'">Задачи</button>
+        <button class="footer-btn" id="profileBtn" onclick="window.location.href='index.html'">Профиль</button>
+    </div>
+
+    <!-- Подключение логики -->
+    <script src="js/app.js"></script> 
+    <script src="js/tasks/data_tasks.js"></script>
+    <script src="js/tasks/tasks.js"></script>
+    
+</body>
+</html>
