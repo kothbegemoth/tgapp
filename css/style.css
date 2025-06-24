@@ -125,7 +125,7 @@ button:hover {
   .test-question {
     padding: 15px;
   }
-  
+
   .theory-container, .answers-container {
     display: flex;
     flex-direction: column;
