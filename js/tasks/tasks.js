@@ -154,5 +154,5 @@ function showAnswer() {
     document.getElementById('modalTitle').innerHTML = 'Верный ответ'
     feedbackModal.style.display = 'flex';
     const index = document.getElementById('currentTask').dataset.index;
-    feedbackText.innerHTML = `Задача:\n${tasks[index].question}\n\nОтвет:\n${tasks[index].reference}`;
+    feedbackText.innerHTML = `Задача:\n${tasks[index].question}\n\nОтвет:\n${tasks[index].reference}`.replace(/\n/g, '<br>');
 }
