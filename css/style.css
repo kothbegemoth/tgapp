@@ -226,8 +226,8 @@ button:hover {
 }
 
 .task-btn {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background-color: #4CAF50;
     border: none;
@@ -240,8 +240,8 @@ button:hover {
 }
 
 .task-btn-img {
-  width: 30px; /* Размер иконки */
-  height: 30px;
+  width: 40px; /* Размер иконки */
+  height: 40px;
 }
 
 .ticket-img {
