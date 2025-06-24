@@ -236,7 +236,8 @@ button:hover {
     justify-content: center;
     display: flex;
     transition: all 0.3s ease;
-    bottom: 0;
+    margin-top: auto; /* Прижимает кнопку вниз */
+    align-self: flex-end;
 }
 
 .task-btn-img {
