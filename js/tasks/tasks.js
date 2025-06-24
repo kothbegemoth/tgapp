@@ -25,16 +25,12 @@ function showFeedback() {
     checkBtn.disabled = true;
 
     //Показываем модалку сразу
+    document.getElementById('modalTitle').innerHTML = 'Результат проверки'
     feedbackText.innerHTML = "Проверка ответа...";
     feedbackModal.style.display = 'flex';
     askOpenAI().then(result => {
         feedbackText.innerHTML = result.replace(/\n/g, '<br>');
     });
-    //если мы в тг
-    if (window.Telegram && Telegram.WebApp) {
-        // обновляем sql
-        const userId = Telegram.WebApp.initDataUnsafe.user.id;
-    }
 }
 
 // Закрытие модалки
@@ -102,7 +98,7 @@ async function askOpenAI() {
         return result || "Не получилось получить ответ";
     }
     catch (error){
-        return `Ошибка: ${error.message}`;
+        return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
     }
 }
 
@@ -144,3 +140,19 @@ document.addEventListener('DOMContentLoaded', newTask());
 
 
 
+
+document.getElementById('showAnswer').addEventListener('click', showAnswer)
+
+function showAnswer() {
+    if (window.Telegram && Telegram.WebApp)    
+
+    // Отключаем кнопку
+    checkBtn.disabled = true;
+
+    //Показываем модалку сразу
+    feedbackText.innerHTML = "...";
+    document.getElementById('modalTitle').innerHTML = 'Верный ответ'
+    feedbackModal.style.display = 'flex';
+    const index = document.getElementById('currentTask').dataset.index;
+    feedbackText.innerHTML = `Задача:\n${tasks[index].question}\n\nОтвет:\n${tasks[index].reference}`;
+}
