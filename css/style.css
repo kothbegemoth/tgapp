@@ -194,6 +194,7 @@ button:hover {
   gap: 10px;
   box-sizing: border-box;
   z-index: 999;
+  justify-content: center;
 }
 
 /* Текстовое поле (textarea) */
@@ -208,7 +209,6 @@ button:hover {
   border-radius: 8px;
   box-sizing: border-box;
   line-height: 1.4;
-  justify-content: center;
 }
 
 .task-container {
