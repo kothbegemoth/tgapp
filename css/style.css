@@ -226,8 +226,8 @@ button:hover {
 }
 
 .task-btn {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #4CAF50;
     border: none;
@@ -237,7 +237,6 @@ button:hover {
     display: flex;
     transition: all 0.3s ease;
     margin-top: auto; /* Прижимает кнопку вниз */
-    align-self: flex-end;
 }
 
 .task-btn-img {
