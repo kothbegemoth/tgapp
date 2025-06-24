@@ -199,7 +199,7 @@ button:hover {
 /* Текстовое поле (textarea) */
 .text-input {
   flex: 1;
-  min-height: 60px;
+  min-height: 200px;
   max-height: 400px;
   resize: none;
   padding: 12px;
