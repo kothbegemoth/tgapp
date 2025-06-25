@@ -136,7 +136,7 @@ button:hover {
     box-sizing: border-box;
 }
 
-.title-btn, .answer-btn, .task-answer-btn {
+.title-btn, .answer-btn, .task-reference-btn, .task-clue-btn {
     /* Размеры и отступы */
     padding: 12px 20px;
     width: 100%; /* Изменено с auto на 100% */
@@ -167,13 +167,13 @@ button:hover {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.title-btn:hover, .answer-btn:hover, .task-btn:hover, .task-answer-btn:hover {
+.title-btn:hover, .answer-btn:hover, .task-btn:hover, .task-reference-btn:hover, .task-clue-btn:hover {
     background-color: #45a049;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.title-btn:active, .answer-btn:active, .task-btn:active, .task-answer-btn:active {
+.title-btn:active, .answer-btn:active, .task-btn:active, .task-reference-btn:active, .task-clue-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 3px rgba(0,0,0,0.2);
 }

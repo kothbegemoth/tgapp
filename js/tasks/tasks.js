@@ -141,9 +141,9 @@ document.addEventListener('DOMContentLoaded', newTask());
 
 
 
-document.getElementById('showAnswer').addEventListener('click', showAnswer)
+document.getElementById('showReference').addEventListener('click', showReference)
 
-function showAnswer() {
+function showReference() {
     if (window.Telegram && Telegram.WebApp)    
 
     // Отключаем кнопку
@@ -156,3 +156,7 @@ function showAnswer() {
     const index = document.getElementById('currentTask').dataset.index;
     feedbackText.innerHTML = `Задача:\n${tasks[index].question}\n\nОтвет:\n${tasks[index].reference}`.replace(/\n/g, '<br>');
 }
+
+document.getElementById('showClue').addEventListener('click', () => {
+     document.getElementById('currentTask').textContent += `\nПодсказка: ${currentTask.clue}`;
+});
