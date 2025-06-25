@@ -136,7 +136,7 @@ button:hover {
     box-sizing: border-box;
 }
 
-.title-btn, .answer-btn, .task-reference-btn, .task-clue-btn {
+.title-btn, .answer-btn {
     /* Размеры и отступы */
     padding: 12px 20px;
     width: 100%; /* Изменено с auto на 100% */
@@ -252,4 +252,42 @@ button:hover {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+.task-reference-btn, .task-clue-btn {
+    /* Размеры и отступы */
+    padding: 12px 20px;
+    width: 100%; /* Изменено с auto на 100% */
+    max-width: 100%; /* Добавлено для ограничения ширины */
+    box-sizing: border-box;
+    
+    /* Перенос текста */
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+    
+    /* Автоматическая высота */
+    min-height: 44px; /* Минимальная высота для удобства касания */
+    height: auto;
+    
+    /* Внешний вид */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block; /* Изменено с inline-block */
+    transition: all 0.3s ease;
+    
+    /* Тень */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.task-reference-btn {
+  background-color: #af6b4c;
+}
+
+.task-clue-btn {
+  background-color: #adaf4c;
 }
