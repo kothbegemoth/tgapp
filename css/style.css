@@ -261,12 +261,6 @@ button:hover {
     max-width: 100%; /* Добавлено для ограничения ширины */
     box-sizing: border-box;
     
-    /* Перенос текста */
-    white-space: normal;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    text-align: center;
-    
     /* Автоматическая высота */
     min-height: 44px; /* Минимальная высота для удобства касания */
     height: auto;
@@ -274,7 +268,8 @@ button:hover {
     /* Внешний вид */
     color: white;
     border: none;
-    border-radius: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
     cursor: pointer;
     font-size: 16px;
     display: block; /* Изменено с inline-block */
