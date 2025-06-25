@@ -7,6 +7,7 @@ function newTask() {
         document.getElementById('currentTask').dataset.index = index;
         const currentTask = tasks[index]
         document.getElementById('currentTask').textContent=currentTask.question;
+        document.getElementById('currentClue').textContent='';
 }
 
 
@@ -158,5 +159,5 @@ function showReference() {
 }
 
 document.getElementById('showClue').addEventListener('click', () => {
-     document.getElementById('currentTask').textContent += `\nПодсказка: ${tasks[document.getElementById('currentTask').dataset.index].clue}`.replace(/\n/g, '<br>');
+     document.getElementById('currentTask').textContent += `\nПодсказка: ${tasks[document.getElementById('currentClue').dataset.index].clue}`.replace(/\n/g, '<br>');
 });
