@@ -93,6 +93,8 @@ async function askOpenAI() {
         const data = await response.json();
         result = data.choices?.[0]?.message?.content;
         console.log(result);
+        result.replace(/T/g, 't');
+        result.replace(/F/g, 'f');
         result.includes('true') 
             ? (() => {toStats(true); result = result.split('true').join('')})()
             : (() => { toStats(false); result = result.split('false').join(''); })();
