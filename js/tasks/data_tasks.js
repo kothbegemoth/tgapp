@@ -1,5 +1,5 @@
 class Task {
-  constructor(question, reference, studentAnswer = "") {
+  constructor(question, reference, clue, studentAnswer = "") {
     this.question = question;
     this.reference = reference;
     this.clue = clue;
