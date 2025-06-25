@@ -159,5 +159,5 @@ function showReference() {
 }
 
 document.getElementById('showClue').addEventListener('click', () => {
-     document.getElementById('currentClue').textContent = `\nПодсказка: ${tasks[document.getElementById('currentTask').dataset.index].clue}`.replace(/\n/g, '<br>');
+     document.getElementById('currentClue').textContent = `\nПодсказка: ${tasks[document.getElementById('currentTask').dataset.index].clue}`;
 });
