@@ -54,7 +54,7 @@ async function main() {
     console.log(result);
 }
 
-
+document.getElementById('checkAnswer').addEventListener('click', main)
 
 
 // Отправка запроса к YandexGPT API
