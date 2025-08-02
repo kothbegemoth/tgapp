@@ -16,7 +16,7 @@ async function queryYandexGPT(prompt) {
                 'Authorization': `Api-Key ${API_KEY}`,
             },
             body: JSON.stringify({
-                modelUri: modelUri,
+                modelUri: `gpt://${FOLDER_ID}/yandexgpt`,
                 completionOptions: {
                     stream: false,
                     temperature: 0.6,
