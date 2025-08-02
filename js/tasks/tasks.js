@@ -60,7 +60,9 @@ async function askOpenAI() {
 
     try {
     //подключаемся к нейронке
-        const apiKey = atob('c2stcHJvai1ybFZJVTB3T0hhdzFGTmx6ZWpUU0FidG1xVEw2ZkZIUDN1Qkx3SzI0ZjMxc21JSnNqcmd0Ulltc1p4R1ZSRVc0a0hqdGxFUzZBSVQzQmxia0ZKTVNGZllIUFRNUEVrMnJ5bW9xREtPQ1VmVGJzaG9oRk42Q1dzZmdhWXRiZlhqWXRmRENxTEFhOEdLMVdIZG9tZlUzNTNEeTgyd0E=')
+        const API_KEY = atob('QVFWTnp0Vm4ya2k4a1hrSFUtdC1uRXJleWVlN290d0NfaHl2R005LQ==');
+        const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
+        const API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
         
         // Создаем промис для таймаута
         const timeoutPromise = new Promise((_, reject) => {
@@ -69,17 +71,25 @@ async function askOpenAI() {
             }, TIMEOUT_MS);
         });
 
-        // Создаем промис для запроса к API
-        const apiPromise = fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`
+
+        const requestBody = {
+            modelUri: `gpt://${FOLDER_ID}/yandexgpt`,
+            completionOptions: {
+            stream: false,
+            temperature: 0.6,
+            maxTokens: 2000,
             },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: messageForAI()
-            })
+      messages: messageForAI()
+    };
+        // Создаем промис для запроса к API
+        const apiPromise = fetch(API_URL, {
+            method: 'POST',
+            headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Api-Key ${API_KEY}`,
+        'x-folder-id': FOLDER_ID,
+            },
+        body: JSON.stringify(requestBody),
         });
 
         // Используем Promise.race для соревнования между запросом и таймаутом
@@ -130,7 +140,7 @@ function messageForAI(){
 
     message = [
                 { role: "system", content: `Привет. Мне задали задачу по анатомии, в решебнике даны ответы, но я их не подсматриваю. Проверяй ответ только после "Мой ответ:" Если после "Мой ответ:" нет ничего - значит я не ответил. Срвни мой ответ с ответом из решебника. Дай мне оценку (совсем неверно/неверно/не совсем верно/верно - укрась эмодзи). Если ответ не содержит ошибок, но немного неполный - это нормальный ответ. Напиши в самом конце сообщения "false" (если мой ответ неверный) или "true" (если мой ответ скорее верный) и дай свой комментарий - совет, как можно улучшить свой ответ. Минимум 10 предложений. Обращайся ко мне на ты. Используй '\\n' для переноса строки.\n Задача: \"${questionText}\"\nОтвет из решебника: \"${referenceAnswer}\"`},
-                { role: "user", content: `Мой ответ: \"${replaceSpecialChars(studentAnswer)}\"` }
+                { role: "user", content: `${replaceSpecialChars(studentAnswer)}` }
             ]
     return message
 }    
