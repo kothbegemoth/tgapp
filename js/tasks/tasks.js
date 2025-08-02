@@ -54,75 +54,13 @@ document.getElementById('nextTaskBtn').addEventListener('click', () => {
 //нейронка 
 
 async function askOpenAI() {
-    // таймаут
-    const TIMEOUT_MS = 25000;
-    let timeoutId;
-
-    try {
-    //подключаемся к нейронке
-        const API_KEY = atob('QVFWTnp0Vm4ya2k4a1hrSFUtdC1uRXJleWVlN290d0NfaHl2R005LQ==');
-        const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
-        const API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
-        
-        // Создаем промис для таймаута
-        const timeoutPromise = new Promise((_, reject) => {
-            timeoutId = setTimeout(() => {
-                reject(new Error('Превышено время ожидания ответа от сервера'));
-            }, TIMEOUT_MS);
-        });
-
-
-        const requestBody = {
-            modelUri: `gpt://${FOLDER_ID}/yandexgpt`,
-            completionOptions: {
-            stream: false,
-            temperature: 0.6,
-            maxTokens: 2000,
-            },
-      messages: messageForAI()
-    };
-        // Создаем промис для запроса к API
-        const apiPromise = fetch(API_URL, {
-            method: 'POST',
-            headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Api-Key ${API_KEY}`,
-        'x-folder-id': FOLDER_ID,
-            },
-        body: JSON.stringify(requestBody),
-        });
-
-        // Используем Promise.race для соревнования между запросом и таймаутом
-        const response = await Promise.race([apiPromise, timeoutPromise]);
-        
-        // Если ответ получен, отменяем таймаут
-        clearTimeout(timeoutId);
-
-        if (!response.ok) throw new Error('Ошибка сети');
-// Проверяем статус операции
-        let result;
-        do {
-            result = await checkOperationStatus(operation.id);
-            if (!result.done) {
-                await new Promise((resolve) => setTimeout(resolve, 1000)); // Ждём 1 секунду
+    
+   try {
+                const result = await checkAnswer(tasks, index, studentAnswer, toStats);
+                resultElement.textContent = result;
+            } catch (error) {
+                resultElement.textContent = `Ошибка: ${error.message}`;
             }
-        } while (!result.done);
-
-        // Извлекаем текст ответа
-        if (!result.response?.alternatives?.[0]?.message?.text) {
-            throw new Error('Ответ от API не содержит текста');
-        }
-        console.log(result);
-        result.replace(/T/g, 't');
-        result.replace(/F/g, 'f');
-        result.includes('true') 
-            ? (() => {toStats(true); result = result.split('true').join('')})()
-            : (() => { toStats(false); result = result.split('false').join(''); })();
-        return result || "Не получилось получить ответ";
-    }
-    catch (error){
-        return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
-    }
 }
 
 function checkOperationStatus(operationId) {
