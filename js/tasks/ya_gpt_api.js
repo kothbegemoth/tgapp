@@ -4,6 +4,59 @@ const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
 const API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
 const TIMEOUT_MS = 25000;
 
+
+
+async function queryYandexGPT(prompt) {
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Api-Key ${API_KEY}`,
+            },
+            body: JSON.stringify({
+                modelUri: modelUri,
+                completionOptions: {
+                    stream: false,
+                    temperature: 0.6,
+                    maxTokens: 2000
+                },
+                messages: [
+                    {
+                        role: 'system',
+                        text: 'Ты помощник, который отвечает кратко и по делу.'
+                    },
+                    {
+                        role: 'user',
+                        text: prompt
+                    }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Ошибка: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.result.text; // Ответ от модели
+    } catch (error) {
+        console.error('Ошибка при запросе к Yandex GPT:', error);
+        return null;
+    }
+}
+
+// Пример использования
+async function main() {
+    const prompt = 'Напиши короткий рассказ о космосе.';
+    const result = await queryYandexGPT(prompt);
+    console.log(result);
+}
+
+
+
+
 // Отправка запроса к YandexGPT API
 async function sendYandexGPTRequest(messages) {
     const timeoutPromise = new Promise((_, reject) => {
