@@ -56,7 +56,7 @@ async function main() {
 
 document.getElementById('checkAnswer').addEventListener('click', main)
 
-
+/*
 // Отправка запроса к YandexGPT API
 async function sendYandexGPTRequest(messages) {
     const timeoutPromise = new Promise((_, reject) => {
@@ -174,4 +174,4 @@ async function checkAnswer(tasks, index, studentAnswer, toStats) {
 }
 
 // Экспорт для использования в браузере
-export { checkAnswer };
+export { checkAnswer }*/
