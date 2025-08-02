@@ -99,9 +99,19 @@ async function askOpenAI() {
         clearTimeout(timeoutId);
 
         if (!response.ok) throw new Error('Ошибка сети');
+// Проверяем статус операции
+        let result;
+        do {
+            result = await checkOperationStatus(operation.id);
+            if (!result.done) {
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // Ждём 1 секунду
+            }
+        } while (!result.done);
 
-        const data = await response.json();
-        result = data.choices?.[0]?.message?.content;
+        // Извлекаем текст ответа
+        if (!result.response?.alternatives?.[0]?.message?.text) {
+            throw new Error('Ответ от API не содержит текста');
+        }
         console.log(result);
         result.replace(/T/g, 't');
         result.replace(/F/g, 'f');
@@ -115,6 +125,28 @@ async function askOpenAI() {
     }
 }
 
+function checkOperationStatus(operationId) {
+    return new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+            reject(new Error('Превышено время ожидания статуса операции'));
+        }, TIMEOUT_MS);
+
+        fetch(`https://llm.api.cloud.yandex.net/foundationModels/v1/operations/${operationId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Api-Key ${API_KEY}`,
+                'x-folder-id': FOLDER_ID,
+            },
+        })
+            .then((response) => {
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+            })
+            .then((data) => resolve(data))
+            .catch((error) => reject(error));
+    });
+}
     //замена символов
 function replaceSpecialChars(text) {
     const replacements = {
