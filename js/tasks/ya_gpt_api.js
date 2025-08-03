@@ -1,61 +1,50 @@
 // yandexGptApi.js
-const API_KEY = atob('QVFWTnp0Vm4ya2k4a1hrSFUtdC1uRXJleWVlN290d0NfaHl2R005LQ=='); // Замените на безопасный способ хранения
+const API_KEY = atob('QVFWTnp0Vm4ya2k4a1hrSFUtdC1uRXJleWVlN290d0NfaHl2R005LQ=='); // Заменить на безопасный способ хранения
 const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
 const API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
 const TIMEOUT_MS = 25000;
 
 
 
-async function queryYandexGPT(prompt) {
 
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Api-Key ${API_KEY}`,
-            },
-            body: JSON.stringify({
-                modelUri: `gpt://${FOLDER_ID}/yandexgpt`,
-                completionOptions: {
-                    stream: false,
-                    temperature: 0.6,
-                    maxTokens: 2000
-                },
-                messages: [
-                    {
-                        role: 'system',
-                        text: 'Ты помощник, который отвечает кратко и по делу.'
-                    },
-                    {
-                        role: 'user',
-                        text: prompt
-                    }
-                ]
-            })
-        });
+document.getElementById('checkAnswer').addEventListener('click', getAnswer)
 
-        if (!response.ok) {
-            throw new Error(`Ошибка: ${response.status}`);
-        }
 
-        const data = await response.json();
-        return data.result.text; // Ответ от модели
-    } catch (error) {
-        console.error('Ошибка при запросе к Yandex GPT:', error);
-        return null;
-    }
+function getAnswer() {
+    console.log(AI)
 }
 
-// Пример использования
-async function main() {
-    const prompt = 'Напиши короткий рассказ о космосе.';
-    const result = await queryYandexGPT(prompt);
-    console.log(result);
+
+
+
+async function AI(messages) {
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
+    });
+
+    const apiPromise = fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Api-Key ${API_KEY}`,
+            'x-folder-id': FOLDER_ID,
+        },
+        body: {
+            "modelUri": "gpt://b1gruhrtqobcuojmk0ee/yandexgpt-lite/rc",
+            "completionOptions": {"maxTokens":500,"temperature":0.3},
+            "messages": [
+                {"role":"system","text":""},
+                {"role":"user","text":"Придумай 5 названий для нового смартфона от производителя Тolk. Объясни свои идеи. Напиши ответ в JSON с полями name и description"}
+            ]
+        },
+    });
+
+    const response = await Promise.race([apiPromise, timeoutPromise]);
+    if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+    return response.json();
 }
-
-document.getElementById('checkAnswer').addEventListener('click', main)
-
+    
+ 
 /*
 // Отправка запроса к YandexGPT API
 async function sendYandexGPTRequest(messages) {
