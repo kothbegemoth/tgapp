@@ -2,22 +2,16 @@
 const API_KEY = atob('QVFWTnp0Vm4ya2k4a1hrSFUtdC1uRXJleWVlN290d0NfaHl2R005LQ=='); // Заменить на безопасный способ хранения
 const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
 const API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
-const TIMEOUT_MS = 25000;
+const TIMEOUT_MS = 2000;
 
 
 
 
-document.getElementById('checkAnswer').addEventListener('click', getAnswer)
+document.getElementById('checkAnswer').addEventListener('click', AI)
 
-
-function getAnswer() {
-    console.log(AI)
-}
-
-
-
-
-async function AI(messages) {
+async function AI() {
+    try
+    {
     const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
     });
@@ -29,19 +23,35 @@ async function AI(messages) {
             'Authorization': `Api-Key ${API_KEY}`,
             'x-folder-id': FOLDER_ID,
         },
-        body: {
-            "modelUri": "gpt://b1gruhrtqobcuojmk0ee/yandexgpt-lite/rc",
-            "completionOptions": {"maxTokens":500,"temperature":0.3},
-            "messages": [
-                {"role":"system","text":""},
-                {"role":"user","text":"Придумай 5 названий для нового смартфона от производителя Тolk. Объясни свои идеи. Напиши ответ в JSON с полями name и description"}
-            ]
+        body: JSON.stringify({
+        "modelUri": `gpt://${FOLDER_ID}/yandexgpt-lite`,
+        "completionOptions": {
+            "stream": false,
+            "temperature": 0.6,
+            "maxTokens": "2000"
         },
+        "messages":[
+          {
+            "role" : "user",
+            "text" : "Hello, how are you ?"
+          }
+          ]
+    }),
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
+    console.log(response);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+
     return response.json();
+
+    }
+    
+    catch (error) 
+    {
+        return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
+    }
+
 }
     
  
