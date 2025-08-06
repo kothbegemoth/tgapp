@@ -7,7 +7,7 @@ const TIMEOUT_MS = 2000;
 
 document.getElementById('checkAnswer').addEventListener('click', AI)
 
-async function AI() {
+async function postYandexGPT() {
     try
     {
     const timeoutPromise = new Promise((_, reject) => {
@@ -39,21 +39,42 @@ async function AI() {
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
-    console.log(response.json);
+    clearTimeout(timeoutId);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-
-    return response.json();
-
+    return getAnswer(response.json().id);
     }
-    
-    catch (error) 
-    {
+
+    catch (error) {
         return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
     }
-
 }
     
- 
+async function getAnswer(id) {
+    try
+    {
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
+    });
+
+    const apiPromise = fetch(`${API_URL}/${id}`, {
+        method: 'GET',
+        headers: {
+                'Accept': '*/*',
+                'Authorization': `Api-Key ${API_KEY}`,
+                'x-folder-id': FOLDER_ID,
+            }
+    });
+
+    const response = await Promise.race([apiPromise, timeoutPromise]);
+    clearTimeout(timeoutId);
+    if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+    return getAnswer(response.json().id);
+    }
+
+    catch (error) {
+        return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
+    }
+}
 /*
 // Отправка запроса к YandexGPT API
 async function sendYandexGPTRequest(messages) {
