@@ -4,8 +4,6 @@ const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
 const API_URL = 'https://d5dufaskevsssmp4temj.laqt4bj7.apigw.yandexcloud.net';//'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
 const TIMEOUT_MS = 2000;
 
-llm
-
 
 document.getElementById('checkAnswer').addEventListener('click', AI)
 
