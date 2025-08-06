@@ -1,10 +1,10 @@
 // yandexGptApi.js
 const API_KEY = atob('QVFWTnp0Vm4ya2k4a1hrSFUtdC1uRXJleWVlN290d0NfaHl2R005LQ=='); // Заменить на безопасный способ хранения
 const FOLDER_ID = 'b1gruhrtqobcuojmk0ee';
-const API_URL = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
+const API_URL = 'https://d5dufaskevsssmp4temj.laqt4bj7.apigw.yandexcloud.net';//'https://llm.api.cloud.yandex.net/foundationModels/v1/completionAsync';
 const TIMEOUT_MS = 2000;
 
-
+llm
 
 
 document.getElementById('checkAnswer').addEventListener('click', AI)
@@ -19,6 +19,7 @@ async function AI() {
     const apiPromise = fetch(API_URL, {
         method: 'POST',
         headers: {
+            'Accept': '*/*',
             'Content-Type': 'application/json',
             'Authorization': `Api-Key ${API_KEY}`,
             'x-folder-id': FOLDER_ID,
@@ -40,7 +41,7 @@ async function AI() {
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
-    console.log(response);
+    console.log(response.json);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
 
     return response.json();
