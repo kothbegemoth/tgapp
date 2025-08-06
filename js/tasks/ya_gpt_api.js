@@ -57,14 +57,13 @@ async function getAnswer(id) {
         setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
     });
 
-    const apiPromise = fetch(API_URL, {
+    const apiPromise = fetch(`${API_URL}/id${id}`, {
         method: 'GET',
         headers: {
                 'Accept': '*/*',
                 'Content-Type': 'application/json',
                 'Authorization': `Api-Key ${API_KEY}`,
-                'x-folder-id': FOLDER_ID,
-                'id': id
+                'x-folder-id': FOLDER_ID
             }
     });
 
