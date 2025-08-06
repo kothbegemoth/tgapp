@@ -8,6 +8,7 @@ const TIMEOUT_MS = 2000;
 document.getElementById('checkAnswer').addEventListener('click', AI)
 
 async function postYandexGPT() {
+    let timeoutId
     try
     {
     const timeoutPromise = new Promise((_, reject) => {
@@ -56,19 +57,21 @@ async function getAnswer(id) {
         setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
     });
 
-    const apiPromise = fetch(`${API_URL}/${id}`, {
+    const apiPromise = fetch(`${API_URL}`, {
         method: 'GET',
         headers: {
                 'Accept': '*/*',
+                'Content-Type': 'application/json',
                 'Authorization': `Api-Key ${API_KEY}`,
                 'x-folder-id': FOLDER_ID,
+
             }
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
     clearTimeout(timeoutId);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    return getAnswer(response.json().id);
+    return getAnswer(response.json());
     }
 
     catch (error) {
