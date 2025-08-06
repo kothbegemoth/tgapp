@@ -64,7 +64,7 @@ async function getAnswer(id) {
                 'Content-Type': 'application/json',
                 'Authorization': `Api-Key ${API_KEY}`,
                 'x-folder-id': FOLDER_ID,
-
+                'id': id
             }
     });
 
