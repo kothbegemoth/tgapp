@@ -57,7 +57,7 @@ async function getAnswer(id) {
         setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
     });
 
-    const apiPromise = fetch(`${API_URL}/id${id}`, {
+    const apiPromise = fetch(`${API_URL}/?${id}`, {
         method: 'GET',
         headers: {
                 'Accept': '*/*',
