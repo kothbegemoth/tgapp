@@ -5,7 +5,7 @@ const API_URL = 'https://d5dufaskevsssmp4temj.laqt4bj7.apigw.yandexcloud.net';//
 const TIMEOUT_MS = 2000;
 
 
-document.getElementById('checkAnswer').addEventListener('click', AI)
+document.getElementById('checkAnswer').addEventListener('click', postYandexGPT)
 
 async function postYandexGPT() {
     let timeoutId
@@ -57,7 +57,7 @@ async function getAnswer(id) {
         setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
     });
 
-    const apiPromise = fetch(`${API_URL}/?${id}`, {
+    const apiPromise = fetch(`${API_URL}?${id}`, {
         method: 'GET',
         headers: {
                 'Accept': '*/*',
@@ -68,7 +68,6 @@ async function getAnswer(id) {
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
-    clearTimeout(timeoutId);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
     return getAnswer(response.json());
     }
