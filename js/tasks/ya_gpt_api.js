@@ -44,7 +44,7 @@ async function postYandexGPT() {
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
     const data = await response.json();
     const id = data.id;
-    return getAnswer(response.id);
+    return getAnswer(id);
     }
 
     catch (error) {
