@@ -59,7 +59,7 @@ async function getAnswer(id) {
         setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
     });
 
-    const apiPromise = fetch(`${API_URL}?${id}`, {
+    const apiPromise = fetch(`${API_URL}/${id}`, {
         method: 'GET',
         headers: {
                 'Accept': '*/*',
@@ -71,7 +71,11 @@ async function getAnswer(id) {
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    return response.json();
+    console.log("a");
+    const data = await response.json();
+    console.log(data);
+    console.log(data.response.alternatives[0].message.text);
+    return data.response.alternatives[0].message.text;
     }
 
     catch (error) {
