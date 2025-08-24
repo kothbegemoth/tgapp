@@ -42,7 +42,8 @@ async function postYandexGPT() {
     const response = await Promise.race([apiPromise, timeoutPromise]);
     clearTimeout(timeoutId);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    console.log(response)
+    const data = await response.json();
+    const id = data.id;
     return getAnswer(response.id);
     }
 
