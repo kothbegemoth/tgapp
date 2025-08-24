@@ -69,7 +69,7 @@ async function getAnswer(id) {
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
     if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    return getAnswer(response.json());
+    return response.json();
     }
 
     catch (error) {
