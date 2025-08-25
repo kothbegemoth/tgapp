@@ -7,7 +7,7 @@ const TIMEOUT_MS = 20000;
 
 document.getElementById('checkAnswer').addEventListener('click', postYandexGPT)
 
-async function postYandexGPT() {
+async function postYandexGPT(message) {
     let timeoutId
     try
     {
@@ -30,13 +30,8 @@ async function postYandexGPT() {
             "temperature": 0.6,
             "maxTokens": "2000"
         },
-        "messages":[
-          {
-            "role" : "user",
-            "text" : "Hello, how are you ?"
-          }
-          ]
-    }),
+        "messages": message 
+        }),
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
@@ -53,35 +48,72 @@ async function postYandexGPT() {
 }
     
 async function getAnswer(id) {
-    try
-    {
-    const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
-    });
+    const POLL_INTERVAL_MS = 1000; // Интервал между запросами
 
-    const apiPromise = fetch(`${API_URL}/${id}`, {
-        method: 'GET',
-        headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json',
-                'Authorization': `Api-Key ${API_KEY}`,
-                'x-folder-id': FOLDER_ID
+    try {
+
+        const startTime = Date.now();
+
+        while (Date.now() - startTime < TIMEOUT_MS) {
+            const apiPromise = fetch(`${API_URL}/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Api-Key ${API_KEY}`,
+                    'x-folder-id': FOLDER_ID
+                }
+            });
+
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Превышено время ожидания одного запроса')), TIMEOUT_MS);
+            });
+
+            const response = await Promise.race([apiPromise, timeoutPromise]);
+            if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+
+            const data = await response.json();
+            console.log(data);
+
+            // Проверяем, готов ли ответ
+            if (data.done && data.response?.alternatives?.[0]?.message?.text) {
+                console.log(data.response.alternatives[0].message.text);
+                return data.response.alternatives[0].message.text;
             }
-    });
 
-    const response = await Promise.race([apiPromise, timeoutPromise]);
-    if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    console.log("a");
-    const data = await response.json();
-    console.log(data);
-    console.log(data.response.alternatives[0].message.text);
-    return data.response.alternatives[0].message.text;
-    }
+            // Если ответ не готов, ждём перед следующим запросом
+            await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL_MS));
+        }
 
-    catch (error) {
+        throw new Error('Превышено общее время ожидания ответа');
+    } catch (error) {
         return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
     }
 }
+
+    //сообщение для нейронки
+function messageForAI(){
+    //берем текст задачки и реф ответа
+    const index = document.getElementById('currentTask').dataset.index;
+    const currentTask = tasks[index];
+    const questionText = currentTask.question;
+    const referenceAnswer = currentTask.reference;
+    const studentAnswer = document.getElementById('studentAnswer').value;
+
+    message = [
+                { "role": "system", "text": `Привет. Мне задали задачу по анатомии, в решебнике даны ответы, но я их не подсматриваю. Проверяй ответ только после "Мой ответ:" Если после "Мой ответ:" нет ничего - значит я не ответил. Срвни мой ответ с ответом из решебника. Дай мне оценку (совсем неверно/неверно/не совсем верно/верно - укрась эмодзи). Если ответ не содержит ошибок, но немного неполный - это нормальный ответ. Напиши в самом конце сообщения "false" (если мой ответ неверный) или "true" (если мой ответ скорее верный) и дай свой комментарий - совет, как можно улучшить свой ответ. Минимум 10 предложений. Обращайся ко мне на ты. Используй '\\n' для переноса строки.\n Задача: \"${questionText}\"\nОтвет из решебника: \"${referenceAnswer}\"`},
+                { "role": "user", "text": `${replaceSpecialChars(studentAnswer)}` }
+            ]
+    return message
+} 
+
+    //замена символов
+function replaceSpecialChars(text) {
+    const replacements = {'\t': '\\t', '\n': '\\n', '\r': '\\r', '\f': '\\f', '"': '\\"', '\\': '\\\\'};
+    return text.replace(/[\t\n\r\f"\\]/g, char => replacements[char]);
+} 
+
+
 /*
 // Отправка запроса к YandexGPT API
 async function sendYandexGPTRequest(messages) {
