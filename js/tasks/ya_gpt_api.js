@@ -7,7 +7,7 @@ const TIMEOUT_MS = 20000;
 
 document.getElementById('checkAnswer').addEventListener('click', postYandexGPT)
 
-async function postYandexGPT(messageText) {
+async function postYandexGPT(message) {
     let timeoutId
     try
     {
@@ -30,13 +30,8 @@ async function postYandexGPT(messageText) {
             "temperature": 0.6,
             "maxTokens": "2000"
         },
-        "messages":[
-          {
-            "role" : "user",
-            "text" : messageText
-          }
-          ]
-    }),
+        "messages": message 
+        }),
     });
 
     const response = await Promise.race([apiPromise, timeoutPromise]);
@@ -60,7 +55,7 @@ async function getAnswer(id) {
         const startTime = Date.now();
 
         while (Date.now() - startTime < TIMEOUT_MS) {
-            const apiPromise = fetch(`${API_URL}/${id}?done=true`, {
+            const apiPromise = fetch(`${API_URL}/${id}`, {
                 method: 'GET',
                 headers: {
                     'Accept': '*/*',
@@ -95,6 +90,30 @@ async function getAnswer(id) {
         return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
     }
 }
+
+    //сообщение для нейронки
+function messageForAI(){
+    //берем текст задачки и реф ответа
+    const index = document.getElementById('currentTask').dataset.index;
+    const currentTask = tasks[index];
+    const questionText = currentTask.question;
+    const referenceAnswer = currentTask.reference;
+    const studentAnswer = document.getElementById('studentAnswer').value;
+
+    message = [
+                { "role": "system", "text": `Привет. Мне задали задачу по анатомии, в решебнике даны ответы, но я их не подсматриваю. Проверяй ответ только после "Мой ответ:" Если после "Мой ответ:" нет ничего - значит я не ответил. Срвни мой ответ с ответом из решебника. Дай мне оценку (совсем неверно/неверно/не совсем верно/верно - укрась эмодзи). Если ответ не содержит ошибок, но немного неполный - это нормальный ответ. Напиши в самом конце сообщения "false" (если мой ответ неверный) или "true" (если мой ответ скорее верный) и дай свой комментарий - совет, как можно улучшить свой ответ. Минимум 10 предложений. Обращайся ко мне на ты. Используй '\\n' для переноса строки.\n Задача: \"${questionText}\"\nОтвет из решебника: \"${referenceAnswer}\"`},
+                { "role": "user", "text": `${replaceSpecialChars(studentAnswer)}` }
+            ]
+    return message
+} 
+
+    //замена символов
+function replaceSpecialChars(text) {
+    const replacements = {'\t': '\\t', '\n': '\\n', '\r': '\\r', '\f': '\\f', '"': '\\"', '\\': '\\\\'};
+    return text.replace(/[\t\n\r\f"\\]/g, char => replacements[char]);
+} 
+
+
 /*
 // Отправка запроса к YandexGPT API
 async function sendYandexGPTRequest(messages) {
