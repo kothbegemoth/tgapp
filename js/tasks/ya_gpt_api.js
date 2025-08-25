@@ -7,7 +7,7 @@ const TIMEOUT_MS = 20000;
 
 document.getElementById('checkAnswer').addEventListener('click', postYandexGPT)
 
-async function postYandexGPT() {
+async function postYandexGPT(messageText) {
     let timeoutId
     try
     {
@@ -33,7 +33,7 @@ async function postYandexGPT() {
         "messages":[
           {
             "role" : "user",
-            "text" : "Hello, how are you ?"
+            "text" : messageText
           }
           ]
     }),
@@ -53,32 +53,45 @@ async function postYandexGPT() {
 }
     
 async function getAnswer(id) {
-    try
-    {
-    const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Превышено время ожидания')), TIMEOUT_MS);
-    });
+    const POLL_INTERVAL_MS = 1000; // Интервал между запросами
 
-    const apiPromise = fetch(`${API_URL}/${id}`, {
-        method: 'GET',
-        headers: {
-                'Accept': '*/*',
-                'Content-Type': 'application/json',
-                'Authorization': `Api-Key ${API_KEY}`,
-                'x-folder-id': FOLDER_ID
+    try {
+
+        const startTime = Date.now();
+
+        while (Date.now() - startTime < TIMEOUT_MS) {
+            const apiPromise = fetch(`${API_URL}/${id}?done=true`, {
+                method: 'GET',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Api-Key ${API_KEY}`,
+                    'x-folder-id': FOLDER_ID
+                }
+            });
+
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Превышено время ожидания одного запроса')), TIMEOUT_MS);
+            });
+
+            const response = await Promise.race([apiPromise, timeoutPromise]);
+            if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
+
+            const data = await response.json();
+            console.log(data);
+
+            // Проверяем, готов ли ответ
+            if (data.done && data.response?.alternatives?.[0]?.message?.text) {
+                console.log(data.response.alternatives[0].message.text);
+                return data.response.alternatives[0].message.text;
             }
-    });
 
-    const response = await Promise.race([apiPromise, timeoutPromise]);
-    if (!response.ok) throw new Error(`Ошибка сети: ${response.status}`);
-    console.log("a");
-    const data = await response.json();
-    console.log(data);
-    console.log(data.response.alternatives[0].message.text);
-    return data.response.alternatives[0].message.text;
-    }
+            // Если ответ не готов, ждём перед следующим запросом
+            await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL_MS));
+        }
 
-    catch (error) {
+        throw new Error('Превышено общее время ожидания ответа');
+    } catch (error) {
         return `Не удалось получить ответ! Попробуйте позже\nОшибка: ${error.message}`;
     }
 }

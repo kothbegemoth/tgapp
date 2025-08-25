@@ -29,7 +29,7 @@ function showFeedback() {
     document.getElementById('modalTitle').innerHTML = 'Результат проверки'
     feedbackText.innerHTML = "Проверка ответа...";
     feedbackModal.style.display = 'flex';
-    askOpenAI().then(result => {
+    postYandexGPT(replaceSpecialChars(document.getElementById('studentAnswer').value)).then(result => {
         feedbackText.innerHTML = result.replace(/\n/g, '<br>');
     });
 }
