@@ -31,8 +31,8 @@ async function postYandexGPT(message) {
             "maxTokens": "2000"
         },
         "messages": [
-            {"role":"system", "text": message.systemText},
-            {"role":"user","text": message.userText}
+            {"role":"system", "text": JSON.stringify(message.systemText)},
+            {"role":"user","text": JSON.stringify(message.userText)}
         ]
         }),
     });
