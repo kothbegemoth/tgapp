@@ -19,7 +19,7 @@ const feedbackText = document.getElementById('feedbackText');
 const checkBtn = document.getElementById('checkAnswer');
 
 // Показываем модалку с проверкой
-function showFeedback() {
+async function showFeedback() {
     if (window.Telegram && Telegram.WebApp)    
 
     // Отключаем кнопку
@@ -29,7 +29,7 @@ function showFeedback() {
     document.getElementById('modalTitle').innerHTML = 'Результат проверки'
     feedbackText.innerHTML = "Проверка ответа...";
     feedbackModal.style.display = 'flex';
-    const answer = postYandexGPT(messageForAI());
+    const answer = await postYandexGPT(messageForAI());
     feedbackText.textContent = answer;
 }
 
