@@ -29,7 +29,7 @@ function showFeedback() {
     document.getElementById('modalTitle').innerHTML = 'Результат проверки'
     feedbackText.innerHTML = "Проверка ответа...";
     feedbackModal.style.display = 'flex';
-    const answer = postYandexGPT(messageForAI());
+    const answer = postYandexGPT(JSON.parse(messageForAI()));
     feedbackText.textContent = answer;
 }
 
